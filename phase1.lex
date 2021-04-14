@@ -1,5 +1,5 @@
 %{
-    int currLine=1, currPos=1;
+    int currLine=1, currPos=0;
 %}
 
 DIGIT   [0-9]
@@ -51,7 +51,6 @@ ID      ({ALPHA})({DIGIT}|{ALPHA}|[_])*
 ">"             {printf("GT\n"); currPos+=yyleng;}
 "<="            {printf("LTE\n"); currPos+=yyleng;}
 ">="            {printf("GTE\n"); currPos+=yyleng;}
-
 ";"             {printf("SEMICOLON\n"); currPos+=yyleng;}
 ":"             {printf("COLON\n"); currPos+=yyleng;}
 ","             {printf("COMMA\n"); currPos+=yyleng;}
@@ -60,14 +59,13 @@ ID      ({ALPHA})({DIGIT}|{ALPHA}|[_])*
 "["             {printf("L_SQUARE_BRACKET\n"); currPos+=yyleng;}
 "]"             {printf("R_SQUARE_BRACKET\n"); currPos+=yyleng;}
 ":="            {printf("ASSIGN\n"); currPos+=yyleng;}
-
 {DIGIT}+        {printf("NUMBER %s\n", yytext); currPos+=yyleng;}
-{COMMENT}[^\n]* {currPos+=yyleng;}
+{COMMENT}[^\n]* {currPos=1;}
 {ERROR1}        {printf("Error at line %d, column %d: invalid identifier \"%s\" must begin with a letter\n", currLine,currPos,yytext); exit(0);}
 {ERROR2}        {printf("Error at line %d, column %d: invalid identifier \"%s\" cannot end with an underscore\n", currLine,currPos,yytext); exit(0);}
 {ID}            {printf("IDENT %s\n", yytext); currPos+=yyleng;}
 [ \t]+          {/*ignore spaces*/ currPos+=yyleng;}
-"\n"            {currLine++; currPos+=1;}
+"\n"            {currLine++; currPos=0;}
 .               {printf("Error at line %d, column %d: unrecognized symbol \"%s\"\n", currLine,currPos,yytext); exit(0);}
 
 %%
